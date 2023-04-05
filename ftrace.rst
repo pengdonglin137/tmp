@@ -2718,7 +2718,7 @@ it will be printed in signed decimal format, otherwise it will
 printed in hexadecimal format.
 
 	- smart: echo nofuncgraph-retval-hex > trace_options
-	- hexadecimal always: echo funcgraph-retval-hex > trace_options
+	- hexadecimal: echo funcgraph-retval-hex > trace_options
 
   Example with funcgraph-retval-hex::
 
@@ -2757,7 +2757,7 @@ option, and these limitations will be eliminated in the future:
 
   Case One::
 
-  The function narrow_to_u8 is defined as follows:
+  The function narrow_to_u8 is defined as follows::
 
      u8 narrow_to_u8(u64 val)
     {
@@ -2765,7 +2765,7 @@ option, and these limitations will be eliminated in the future:
         return val;
     }
 
-  It may be compiled to:
+  It may be compiled to::
 
     narrow_to_u8:
         < ... ftrace instrumentation ... >
@@ -2776,25 +2776,25 @@ option, and these limitations will be eliminated in the future:
 
   Case Two::
 
-  The function error_if_not_4g_aligned is defined as follows:
+  The function error_if_not_4g_aligned is defined as follows::
 
-    int error_if_not_4g_aligned(u64 val)
-    {
-        if (val & GENMASK(31, 0))
-            return -EINVAL;
+	int error_if_not_4g_aligned(u64 val)
+	{
+		if (val & GENMASK(31, 0))
+		return -EINVAL;
 
-        return 0;
-    }
+		return 0;
+	}
 
-  It could be compiled to:
+  It could be compiled to::
 
-    error_if_not_4g_aligned:
-        CBNZ    w0, .Lnot_aligned
-        RET                // bits [31:0] are zero, bits
-                        // [63:32] are UNKNOWN
-    .Lnot_aligned:
-        MOV    x0, #-EINVAL
-        RET
+	error_if_not_4g_aligned:
+		CBNZ    w0, .Lnot_aligned
+		RET                // bits [31:0] are zero, bits
+				   // [63:32] are UNKNOWN
+	.Lnot_aligned:
+		MOV    x0, #-EINVAL
+		RET
 
   When passing 0x2_0000_0000 to it, the return value may be recorded as
   0x2_0000_0000 instead of 0.
